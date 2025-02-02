@@ -1,0 +1,88 @@
+blockchains:
+  choccy_home:
+    module: main
+    moduleArgs:
+      lib.ft4.core.accounts.strategies.transfer:
+        rules:
+          - sender_blockchain: "*"
+            sender: "*"
+            recipient: "*"
+            asset:
+              - id: x"5F16D1545A0881F971B164F1601CBBF51C29EFD0633B2730DA18C403C3B428B5"
+                min_amount: 10000000L
+            timeout_days: 3
+            strategy:
+            - "fee"
+          - sender_blockchain: "*"
+            sender: "*"
+            recipient: "*"
+            asset:
+              - name: "ChoccyUSD"
+                min_amount: 1000000000000000000L
+            timeout_days: 3
+            strategy:
+            - "fee"
+      lib.ft4.core.accounts.strategies.transfer.fee:
+        asset:
+          - id: x"5F16D1545A0881F971B164F1601CBBF51C29EFD0633B2730DA18C403C3B428B5"
+            amount: 10000000L
+          - id: x"ChoccyUSD"
+            amount: 1000000000000000000L
+
+
+libs:
+  ft4:
+    registry: https://gitlab.com/chromaway/ft4-lib.git
+    path: rell/src/lib/ft4
+    tagOrBranch: v1.0.0r
+    rid: x"FA487D75E63B6B58381F8D71E0700E69BEDEAD3A57D1E6C1A9ABB149FAC9E65F"
+    insecure: false
+  iccf:
+    registry: https://gitlab.com/chromaway/core/directory-chain
+    path: src/iccf
+    tagOrBranch: 1.32.2
+    rid: x"1D567580C717B91D2F188A4D786DB1D41501086B155A68303661D25364314A4D"
+    insecure: false
+
+deployments:
+  testnet: # Deployment Target name
+    brid: x"6F1B061C633A992BF195850BF5AA1B6F887AEE01BB3F51251C230930FB792A92" # Blockchain RID for Testnet Directory Chain
+    url: https://node0.testnet.chromia.com:7740 # Target URL for one of the nodes in Testnet
+    container: e04176fb4729d927088c9003b892ce052bc1f0417d225fae7d4b16df2ef1c8aa
+  mainnet:
+    brid: x"7E5BE539EF62E48DDA7035867E67734A70833A69D2F162C457282C319AA58AE4"
+    url: https://dapps0.chromaway.com:7740
+    container: 6e1e6163c66d87181796bb2fc664730a787f7fe7973183587c7ab4f908292c1f
+
+compile:
+  rellVersion: 0.14.0
+
+test:
+  modules:
+  moduleArgs:
+    lib.ft4.core.accounts.strategies.transfer:
+      rules:
+        - sender_blockchain: "*"
+          sender: "*"
+          recipient: "*"
+          asset:
+            - id: x"5F16D1545A0881F971B164F1601CBBF51C29EFD0633B2730DA18C403C3B428B5"
+              min_amount: 10000000L
+          timeout_days: 3
+          strategy:
+          - "fee"
+        - sender_blockchain: "*"
+          sender: "*"
+          recipient: "*"
+          asset:
+            - name: "ChoccyUSD"
+              min_amount: 1000000000000000000L
+          timeout_days: 3
+          strategy:
+          - "fee"
+    lib.ft4.core.accounts.strategies.transfer.fee:
+      asset:
+        - id: x"5F16D1545A0881F971B164F1601CBBF51C29EFD0633B2730DA18C403C3B428B5"
+          amount: 10000000L
+        - id: x"ChoccyUSD"
+          amount: 1000000000000000000L
