@@ -1,33 +1,29 @@
 blockchains:
+  event_receiver:
+    module: event_receiver
+    config:
+      blockstrategy:
+        maxblocktime: 2000
+      eif:
+        chains:
+          bsc:
+            network_id: 97
+            contracts:
+              - "0x644FD079B2aBCf503880Bc0A4A172CecBC99D630"
+            skip_to_height: -10
+            evm_read_offset: 2
+            read_offset: 2
+            events: !include config/events.yaml
+      gtx:
+        modules:
+          - "net.postchain.eif.EifGTXModule"
+          - "net.postchain.d1.icmf.IcmfSenderGTXModule"
+      sync_ext:
+        - "net.postchain.eif.EifSynchronizationInfrastructureExtension"
   choccy_home:
     module: main
-    moduleArgs:
-      lib.ft4.core.accounts.strategies.transfer:
-        rules:
-          - sender_blockchain: "*"
-            sender: "*"
-            recipient: "*"
-            asset:
-              - id: x"5F16D1545A0881F971B164F1601CBBF51C29EFD0633B2730DA18C403C3B428B5"
-                min_amount: 10000000L
-            timeout_days: 3
-            strategy:
-            - "fee"
-          - sender_blockchain: "*"
-            sender: "*"
-            recipient: "*"
-            asset:
-              - name: "ChoccyUSD"
-                min_amount: 1000000000000000000L
-            timeout_days: 3
-            strategy:
-            - "fee"
-      lib.ft4.core.accounts.strategies.transfer.fee:
-        asset:
-          - id: x"5F16D1545A0881F971B164F1601CBBF51C29EFD0633B2730DA18C403C3B428B5"
-            amount: 10000000L
-          - id: x"ChoccyUSD"
-            amount: 1000000000000000000L
+    config: !include config/bridge.yaml
+    moduleArgs: !include config/ras.yaml
 
 
 libs:
@@ -43,6 +39,37 @@ libs:
     tagOrBranch: 1.32.2
     rid: x"1D567580C717B91D2F188A4D786DB1D41501086B155A68303661D25364314A4D"
     insecure: false
+  icmf:
+    registry: https://gitlab.com/chromaway/core/directory-chain
+    path: src/lib/icmf
+    tagOrBranch: 1.75.5
+    rid: x"1A4B3C3A1325DEF2C426C4F0F93F7444BB074373A24367DAA958C32F21B2EA1D"
+    insecure: false
+  eif:
+    registry: https://gitlab.com/chromaway/postchain-eif
+    path: postchain-eif-rell/rell/src/eif
+    tagOrBranch: 0.9.0
+    rid: x"D9FAA2AA88DEE0D1EAAFDFE8E28C1BAD89284CE4B6E75C1DBA9272DD8C3D944E"
+    insecure: false
+  eif_event_receiver:
+    registry: https://gitlab.com/chromaway/postchain-eif
+    path: postchain-eif-rell/rell/src/eif_event_receiver
+    tagOrBranch: 0.9.0
+    rid: x"BDEB142851437327590715FF0912258D5435D294A59857B545BF69D27A0ADBB0"
+    insecure: false
+  eif_event_connector:
+    registry: https://gitlab.com/chromaway/postchain-eif
+    path: postchain-eif-rell/rell/src/eif_event_connector
+    tagOrBranch: 0.9.0
+    rid: x"4A669C5F98AEE970FECD5B77116E737196C7D3C7C6217DFD7EAC2F9317FC9461"
+    insecure: false
+  hbridge:
+    registry: https://gitlab.com/chromaway/postchain-eif
+    path: postchain-eif-rell/rell/src/hbridge
+    tagOrBranch: 0.9.0
+    rid: x"6CD1664A7CEAAA6FDE35792E73A45EC8CD02DC7B2EB6B220B85FA638ED43A056"
+    insecure: false
+
 
 deployments:
   testnet: # Deployment Target name
@@ -59,30 +86,5 @@ compile:
 
 test:
   modules:
-  moduleArgs:
-    lib.ft4.core.accounts.strategies.transfer:
-      rules:
-        - sender_blockchain: "*"
-          sender: "*"
-          recipient: "*"
-          asset:
-            - id: x"5F16D1545A0881F971B164F1601CBBF51C29EFD0633B2730DA18C403C3B428B5"
-              min_amount: 10000000L
-          timeout_days: 3
-          strategy:
-          - "fee"
-        - sender_blockchain: "*"
-          sender: "*"
-          recipient: "*"
-          asset:
-            - name: "ChoccyUSD"
-              min_amount: 1000000000000000000L
-          timeout_days: 3
-          strategy:
-          - "fee"
-    lib.ft4.core.accounts.strategies.transfer.fee:
-      asset:
-        - id: x"5F16D1545A0881F971B164F1601CBBF51C29EFD0633B2730DA18C403C3B428B5"
-          amount: 10000000L
-        - id: x"ChoccyUSD"
-          amount: 1000000000000000000L
+    - test.test_wrap
+  moduleArgs: !include config/ras.yaml

@@ -1,0 +1,20 @@
+nonce: 1
+blockstrategy:
+  maxblocktime: 2000
+eif:
+  snapshot:
+    levels_per_page: 2
+    snapshots_to_keep: 2
+    version: 2
+gtx:
+  modules:
+    - "net.postchain.eif.EifGTXModule"
+    - "net.postchain.d1.icmf.IcmfReceiverGTXModule"
+sync_ext:
+  - "net.postchain.d1.icmf.IcmfReceiverSynchronizationInfrastructureExtension"
+
+icmf:
+  receiver:
+    local:
+      - bc-rid: x"5ACA640251AD8E7A44C9B30515A907BC66C572D91FCA38B16A597CE5594F4C0B"
+        topic: "L_evm_block_events"

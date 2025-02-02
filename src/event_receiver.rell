@@ -1,0 +1,3 @@
+module;
+
+import event_receiver: lib.eif_event_receiver.*;

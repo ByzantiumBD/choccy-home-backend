@@ -1,0 +1,20 @@
+operation setup_bridge(
+    asset_network_id: integer,
+    asset_address: byte_array,
+    asset_id: byte_array,
+    bridge_address: byte_array,
+) {
+    val a = auth.authenticate();
+    require(
+        a.id == admin.account_id,
+        "Only admin can setup the bridge"
+    );
+    main.eif.hbridge.register_bridge_and_erc20_asset(
+        asset_network_id,
+        asset_address,
+        assets.asset @ { .id == asset_id },
+        main.eif.hbridge.bridge_mode.foreign,
+        true,
+        bridge_address,
+    );
+}

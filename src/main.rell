@@ -9,6 +9,12 @@ import external;
 import vault_support;
 import wrapper;
 
+namespace eif {
+  import messaging: lib.eif.messaging;
+  import lib.hbridge;
+  import lib.eif_event_connector;
+}
+
 object cusd {
     mutable assets.asset = register_asset_if_needed(
         "ChoccyUSD",
