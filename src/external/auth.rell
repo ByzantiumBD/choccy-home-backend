@@ -1,0 +1,31 @@
+function wrap_message(gtv) {
+    val params = struct<wrap>.from_gtv(gtv);
+    val amount = params.amount;
+    return ("Please sign the message to wrap <%s USDT> into CUSD.")
+        .format(
+            assets.format_amount_with_decimals(params.amount, 18)
+        );
+}
+
+@extend(auth.auth_handler)
+function () = auth.add_auth_handler(
+    scope = rell.meta(wrap).mount_name,
+    flags = ["T"],
+    message = wrap_message(*)
+);
+
+function unwrap_message(gtv) {
+    val params = struct<unwrap>.from_gtv(gtv);
+    val amount = params.amount;
+    return ("Please sign the message to retrieve <%s USDT> from CUSD.")
+        .format(
+            assets.format_amount_with_decimals(params.amount, 18)
+        );
+}
+
+@extend(auth.auth_handler)
+function () = auth.add_auth_handler(
+    scope = rell.meta(unwrap).mount_name,
+    flags = ["T"],
+    message = unwrap_message(*)
+);

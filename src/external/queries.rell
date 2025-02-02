@@ -1,0 +1,5 @@
+import main;
+
+query get_total_wrapped() {
+  return assets.balance @ { main.cusd.vault } .amount;
+}

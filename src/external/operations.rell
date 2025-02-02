@@ -1,0 +1,17 @@
+operation wrap(amount: big_integer) {
+    val account = auth.authenticate();
+    admin.before_wrapper_interaction(account);
+
+    require(amount>0, "Must wrap non-zero positive amount.");
+
+    wrapper.wrap_usd(account, amount);
+}
+
+operation unwrap(amount: big_integer) {
+    val account = auth.authenticate();
+    admin.before_wrapper_interaction(account);
+
+    require(amount>0, "Must unwrap non-zero positive amount.");
+
+    wrapper.unwrap_usd(account, amount);
+}

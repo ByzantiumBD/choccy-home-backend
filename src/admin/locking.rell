@@ -1,0 +1,25 @@
+function before_wrapper_interaction(accounts.account) {
+    if (not admin.wrapper_locked) { return; }
+    require(
+        account.id == admin.account_id,
+        "Only admin can interact with the wrapper at this time"
+    );
+}
+
+operation lock_wrap() {
+    val a = auth.authenticate();
+    require(
+        a.id == admin.account_id,
+        "Only admin can lock the wrapper"
+    );
+    admin.wrapper_locked = true;
+}
+
+operation unlock_wrap() {
+    val a = auth.authenticate();
+    require(
+        a.id == admin.account_id,
+        "Only admin can unlock the dex"
+    );
+    admin.wrapper_locked = false;
+}

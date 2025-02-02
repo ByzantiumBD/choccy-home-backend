@@ -1,0 +1,19 @@
+module;
+
+import lib.ft4.accounts;
+import lib.ft4.assets;
+import lib.ft4.utils;
+import ^.main;
+import ^.external;
+
+function wrap_usd(accounts.account, amount: big_integer) {
+    val usdt = assets.asset @ { .name == "USDT" };
+    assets.Unsafe.transfer(account, main.cusd.vault, usdt, amount);
+    assets.Unsafe.mint(account, main.cusd.asset, amount);
+}
+
+function unwrap_usd(accounts.account, amount: big_integer) {
+    val usdt = assets.asset @ { .name == "USDT" };
+    assets.Unsafe.burn(account, main.cusd.asset, amount);
+    assets.Unsafe.transfer(main.cusd.vault, account, usdt, amount);
+}

@@ -1,0 +1,56 @@
+module;
+
+import lib.ft4.prioritization;
+import lib.ft4.assets;
+import lib.ft4.accounts;
+import lib.ft4.accounts.strategies;
+import lib.ft4.accounts.strategies.transfer.fee;
+import external;
+import vault_support;
+import wrapper;
+
+object cusd {
+    mutable assets.asset = register_asset_if_needed(
+        "ChoccyUSD",
+        "CUSD",
+        18,
+        "https://www.choc.cy/cusd.svg"
+    );
+    mutable vault: accounts.account = register_account_if_needed(
+        "ChoccyVault".hash(),
+        "CHOCCY_VAULT"
+    );
+}
+
+function register_asset_if_needed(
+    asset_name: name,
+    symbol: text,
+    decimals: integer,
+    icon_url: text
+): assets.asset {
+    // derive id of the asset
+    val asset_id = (asset_name, chain_context.blockchain_rid).hash();
+    // check if asset already exist
+    val a = assets.asset @ ? { .id == asset_id };
+    if (a??)
+        return a;
+
+    return assets.Unsafe.register_asset(
+            asset_name,
+            symbol,
+            decimals,
+            chain_context.blockchain_rid,
+            icon_url
+        );
+}
+
+function register_account_if_needed(
+    account_id: byte_array,
+    type: text,
+): accounts.account {
+    // check if account already exist
+    val a = accounts.account @ ? { .id == account_id };
+    if (a??) return a;
+
+    return accounts.create_account_without_auth(account_id, type);
+}
