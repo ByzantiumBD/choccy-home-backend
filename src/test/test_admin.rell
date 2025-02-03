@@ -1,0 +1,85 @@
+@test module;
+import tu: ^.test_utils;
+import ^^.admin;
+import ops: ^.test_operations;
+import ^^.external;
+import ^^.main;
+import ft_utils: lib.ft4.utils;
+import lib.ft4.assets;
+
+function test_lock_unlock_wrapper() {
+    ops.set_admin_trudy().run();
+
+    val alice = tu.setup_alice_with_balance();
+    tu.run(
+        external.wrap(10L),
+        rell.test.keypairs.alice
+    );
+
+    tu.run(admin.lock_wrap(), rell.test.keypairs.trudy);
+
+    tu.expect_failure(
+        external.wrap(10L),
+        rell.test.keypairs.alice,
+        "Only admin can interact with the wrapper at this time"
+    );
+
+    tu.run(admin.unlock_wrap(), rell.test.keypairs.trudy);
+
+    tu.run(
+        external.wrap(10L),
+        rell.test.keypairs.alice
+    );
+
+    assert_equals(
+        assets.balance @ { alice, main.cusd.asset } .amount,
+        1020L
+    );
+    assert_equals(
+        assets.balance @ { alice, main.cusd.wrappable } .amount,
+        980L
+    );
+}
+
+function test_set_admin() {
+    ops.set_admin_trudy().run();
+    val alice = tu.create_account(rell.test.keypairs.alice.pub);
+    val bob = tu.create_account(rell.test.keypairs.bob.pub);
+
+    tu.run(
+        admin.set_admin(alice.id),
+        rell.test.keypairs.trudy
+    );
+    assert_equals(admin.admin.account_id, alice.id);
+
+    tu.expect_failure(
+        admin.set_admin(bob.id),
+        rell.test.keypairs.trudy,
+        "Only admin can set a new admin"
+    );
+    assert_equals(admin.admin.account_id, alice.id);
+
+    tu.run(
+        admin.set_admin(bob.id),
+        rell.test.keypairs.alice
+    );
+    assert_equals(admin.admin.account_id, bob.id);
+}
+
+function test_can_retrieve_fees() {
+    ops.set_admin_trudy().run();
+    val alice = tu.create_account(rell.test.keypairs.alice.pub);
+    val asset1 = tu.get_asset("abc");
+    val asset2 = tu.get_asset("def");
+
+    tu.give_balance(admin.admin.fee_account, asset1, 1000L);
+    tu.give_balance(admin.admin.fee_account, asset2, 1000L);
+
+    tu.expect_failure(admin.retrieve_fees(), rell.test.keypairs.alice, "Only admin can retrieve fees");
+    tu.run(admin.retrieve_fees(), rell.test.keypairs.trudy);
+
+    assert_null(assets.balance @? { admin.admin.fee_account, asset1 });
+    assert_null(assets.balance @? { admin.admin.fee_account, asset2 });
+    assert_equals(assets.balance @ { .account.id == admin.admin.account_id, asset1 } .amount, 1000L);
+    assert_equals(assets.balance @ { .account.id == admin.admin.account_id, asset2 } .amount, 1000L);
+}

@@ -1,0 +1,51 @@
+module;
+import ^^.main;
+import ^^.admin;
+import lib.ft4.assets;
+import lib.ft4.accounts;
+import lib.ft4.auth;
+
+operation set_admin_trudy() {
+    val trudy = accounts.create_account_with_auth(
+        accounts.auth_descriptor(
+            accounts.auth_type.S,
+            args = [
+                ["A", "T"].to_gtv(),
+                x"023C72ADDB4FDF09AF94F0C94D7FE92A386A7E70CF8A1D85916386BB2535C7B1B1".to_gtv(), // trudy
+            ],
+            rules = null.to_gtv()
+        )
+    );
+    admin.admin.account_id = trudy.id;
+}
+
+operation create_acc_test(accounts.auth_descriptor) {
+    admin.admin.wrapper_locked = false;
+    accounts.create_account_with_auth(auth_descriptor);
+}
+operation register_asset_test(name, decimals: integer) {
+    assets.Unsafe.register_asset(
+        name,
+        name,
+        decimals,
+        chain_context.blockchain_rid,
+        "http://"+name
+    );
+}
+operation mint_test(account_id: byte_array, asset_id: byte_array, amount: big_integer) {
+    assets.Unsafe.mint(
+        accounts.account @ {account_id},
+        assets.asset @ {.id == asset_id},
+        amount
+    );
+}
+function empty_auth_message(gtv) = "";
+@extend(auth.auth_handler)
+function () = auth.add_auth_handler(
+    scope = rell.meta(empty_auth).mount_name,
+    flags = ["T"],
+    message = empty_auth_message(*)
+);
+operation empty_auth() {
+    auth.authenticate();
+}
