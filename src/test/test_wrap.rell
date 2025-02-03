@@ -1,1 +1,17 @@
 @test module;
+
+function test_can_wrap_usdc() {
+
+}
+
+function test_can_unwrap_usdc() {
+
+}
+
+function test_cannot_wrap_usdc_with_insufficient_funds() {
+
+}
+
+function test_cannot_unwrap_usdc_with_insufficient_funds() {
+
+}
