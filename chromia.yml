@@ -87,4 +87,5 @@ compile:
 test:
   modules:
     - test.test_wrap
+    - test.test_admin
   moduleArgs: !include config/ras.yaml

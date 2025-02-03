@@ -26,6 +26,12 @@ object cusd {
         "ChoccyVault".hash(),
         "CHOCCY_VAULT"
     );
+    mutable wrappable: assets.asset = register_asset_if_needed(
+        "USD Coin",
+        "USDC",
+        18,
+        "https://assets.coingecko.com/coins/images/6319/standard/usdc.png?1696506694"
+    );
 }
 
 function register_asset_if_needed(

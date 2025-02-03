@@ -1,17 +1,63 @@
 @test module;
+import ^.test_utils;
+import ^^.external;
+import ^^.main;
+import lib.ft4.assets;
 
 function test_can_wrap_usdc() {
+    val alice = test_utils.setup_alice_with_balance();
 
+    test_utils.run(
+        external.wrap(
+            100L
+        ),
+        rell.test.keypairs.alice
+    );
+    test_utils.expect_failure(
+        external.wrap(
+            1000L
+        ),
+        rell.test.keypairs.alice,
+        "Balance is too low"
+    );
+    assert_equals(
+        assets.balance @ { alice, main.cusd.asset } .amount,
+        1100L
+    );
+    assert_equals(
+        assets.balance @ { alice, main.cusd.wrappable } .amount,
+        900L
+    );
 }
 
 function test_can_unwrap_usdc() {
+    val alice = test_utils.setup_alice_with_balance();
 
+    test_utils.run(
+        external.unwrap(
+            100L
+        ),
+        rell.test.keypairs.alice
+    );
+    test_utils.expect_failure(
+        external.unwrap(
+            1000L
+        ),
+        rell.test.keypairs.alice,
+        "Insufficient balance"
+    );
+    assert_equals(
+        assets.balance @ { alice, main.cusd.wrappable } .amount,
+        1100L
+    );
+    assert_equals(
+        assets.balance @ { alice, main.cusd.asset } .amount,
+        900L
+    );
 }
 
-function test_cannot_wrap_usdc_with_insufficient_funds() {
-
-}
-
-function test_cannot_unwrap_usdc_with_insufficient_funds() {
-
+function queries_tvl() {
+    val alice = test_utils.setup_alice_with_balance();
+    val tvl = external.get_total_wrapped();
+    assert_equals(tvl, 1000L);
 }

@@ -7,13 +7,11 @@ import ^.main;
 import ^.external;
 
 function wrap_usd(accounts.account, amount: big_integer) {
-    val usdt = assets.asset @ { .name == "USDT" };
-    assets.Unsafe.transfer(account, main.cusd.vault, usdt, amount);
+    assets.Unsafe.transfer(account, main.cusd.vault, main.cusd.wrappable, amount);
     assets.Unsafe.mint(account, main.cusd.asset, amount);
 }
 
 function unwrap_usd(accounts.account, amount: big_integer) {
-    val usdt = assets.asset @ { .name == "USDT" };
     assets.Unsafe.burn(account, main.cusd.asset, amount);
-    assets.Unsafe.transfer(main.cusd.vault, account, usdt, amount);
+    assets.Unsafe.transfer(main.cusd.vault, account, main.cusd.wrappable, amount);
 }
