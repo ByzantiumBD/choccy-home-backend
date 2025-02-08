@@ -13,7 +13,7 @@ lib.ft4.core.accounts.strategies.transfer:
       sender: "*"
       recipient: "*"
       asset:
-        - name: "ChoccyUSD"
+        - name: ChoccyUSD # from this chain
           min_amount: 1000000000000000000L
       timeout_days: 3
       strategy:
@@ -22,5 +22,6 @@ lib.ft4.core.accounts.strategies.transfer.fee:
   asset:
     - id: x"5F16D1545A0881F971B164F1601CBBF51C29EFD0633B2730DA18C403C3B428B5"
       amount: 10000000L
-    - id: x"ChoccyUSD"
+    - name: ChoccyUSD # from this chain
       amount: 1000000000000000000L
+  fee_account: x"0000000000000000000000000000000000000000000000000000000000000000"
